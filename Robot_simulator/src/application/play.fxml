@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="paneFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="477.0" prefWidth="650.0" style="-fx-background-color: black;">
+         <children>
+            <Pane fx:id="panePlay" layoutX="2.0" layoutY="2.0" prefHeight="473.0" prefWidth="646.0" style="-fx-background-color: grey;" />
+         </children>
+      </Pane>
+   </children>
+</Pane>
