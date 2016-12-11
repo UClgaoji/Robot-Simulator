@@ -2,25 +2,28 @@ package application;
 	
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.event.ActionEvent;
 
 
 public class Main extends Application {
@@ -34,6 +37,8 @@ public class Main extends Application {
 	
 	private Pane root;
 	
+    File outFile = new File("test.txt");
+	
 	
 	
 	
@@ -46,6 +51,8 @@ public class Main extends Application {
     }
     
     private Direction direction;
+    
+    private double absAngle;
 	
 	private Parent createContent() throws Exception{
 		
@@ -61,31 +68,87 @@ public class Main extends Application {
 		
         root.setPrefSize(646.0, 473.0);
         
+        
+        Rectangle rect1 = new Rectangle(270, 38, Color.BLACK);
+        rect1.setTranslateY(200);
+        
+        
         robot = initRobot();
         root.getChildren().add(robot);
+        root.getChildren().add(rect1);
         
         
       //lower the speed if want to increase the the movement velocity.
         KeyFrame frame = new KeyFrame(Duration.seconds(speed), event -> {
-
-
         	
-          switch (direction) {
-          case UP:
+        	if (robot.getBoundsInParent().intersects(rect1.getBoundsInParent())){
+        		if(input.contains("W")){
+           		 robot.setTranslateX(robot.getTranslateX() - 2*Math.sin(absAngle*Math.PI/180.0));
+           		 robot.setTranslateY(robot.getTranslateY() + 2*Math.cos(absAngle*Math.PI/180.0));
+            		input.clear();
+        		}
+        		
+        		if(input.contains("S")){
+            		 robot.setTranslateX(robot.getTranslateX() + 2*Math.sin(absAngle*Math.PI/180.0));
+             		 robot.setTranslateY(robot.getTranslateY() - 2*Math.cos(absAngle*Math.PI/180.0));
+        			input.clear();
+        		}
+        		
+        		if(input.contains("A")){
+          		  robot.getTransforms().add(new Rotate(0.5,0,0));
+          		  absAngle += 0.5;
+          		 input.clear();
 
-    		robot.setTranslateY(robot.getTranslateY() - 4);
-    		break;
-    		
-          case DOWN:
+        		}
+        		
+        		if(input.contains("D")){
+          		  robot.getTransforms().add(new Rotate(-0.5,0,0));
+          		  absAngle -= 0.5;
+            	 input.clear();
+
+          		}
+
+        	}
+
+
+        	if(!input.contains("W") && !input.contains("S"))
+        		robot.setTranslateY(robot.getTranslateY());
+
+
+        	 if(input.contains("W")){
+        		 robot.setTranslateX(robot.getTranslateX() + 2*Math.sin(absAngle*Math.PI/180.0));
+        		 robot.setTranslateY(robot.getTranslateY() - 2*Math.cos(absAngle*Math.PI/180.0));
+    		}
+
         	  
+        	  if(input.contains("S")){
+         		 robot.setTranslateX(robot.getTranslateX() - 2*Math.sin(absAngle*Math.PI/180.0));
+         		 robot.setTranslateY(robot.getTranslateY() + 2*Math.cos(absAngle*Math.PI/180.0));
+     		}
         	  
-        	  robot.setTranslateY(robot.getTranslateY() + 4);
-        	  break;
+        	  if(input.contains("A")){
+        		  if(input.contains("W") || input.contains("S")){
+        			  //robotSpeed*time/(radius + width/2)
+        			  robot.getTransforms().add(new Rotate(-1,10,0));
+        			  absAngle -= 1;
+        		  }else{
+        		  robot.getTransforms().add(new Rotate(-0.5,0,0));
+        		  absAngle -= 0.5;
+        		  }
+        	  }
         	  
-		default:
-			break;
-    	}
-        	
+        	  if(input.contains("D")){
+        		  if(input.contains("W") || input.contains("S")){
+        			  robot.getTransforms().add(new Rotate(1,10,0));
+        			  absAngle += 1;
+        			  
+        		  }else{
+        		  robot.getTransforms().add(new Rotate(0.5,38,0));
+        		  absAngle += 0.5;
+        		  }
+        	  }
+ 
+
         	
         });
 
@@ -101,7 +164,8 @@ public class Main extends Application {
    
 
     private Node initRobot() {
-        Rectangle rect = new Rectangle(38, 38, Color.GREEN);
+        Rectangle rect = new Rectangle(20, 38, Color.GREEN);
+        rect.setTranslateX(200.0);
         rect.setTranslateY(473.0 - 39);
         return rect;
     }
@@ -143,34 +207,70 @@ public class Main extends Application {
 		// TODO Auto-generated method stub
 		
         scene.setOnKeyPressed(event -> {
-//        	if(event.getCode()==KeyCode.W){
-//        		robot.setTranslateY(robot.getTranslateY() - 20);
-//        	}
-//        	
-//        	if(event.getCode()==KeyCode.S){
-//        		robot.setTranslateY(robot.getTranslateY() + 20);
-//        	}
-//        
-//        	if(event.getCode()==KeyCode.A){
-//        		robot.setTranslateX(robot.getTranslateX() - 20);
-//        	}
-//        	
-//        	if(event.getCode()==KeyCode.D){
-//        		robot.setTranslateX(robot.getTranslateX() + 20);
-//        	}
         	
-        	 switch (event.getCode()) {
-             case W:
-
-                     direction = Direction.UP;
-                 break;
-
-             case S:
-
-                     direction = Direction.DOWN;
-                 break;
-        	 }
+        	String code = event.getCode().toString();
         	
+            try {
+				FileWriter fWriter = new FileWriter(outFile, true);
+				PrintWriter pWriter = new PrintWriter(fWriter);
+
+
+        	
+
+        	if(! input.contains(code)){
+        		if("S".equals(code)){
+        			if(input.contains("W")){
+        				input.remove("W");
+        				String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        				pWriter.println(timeStamp + " robot stop");
+
+        			}
+        			else 
+        				input.add(code);
+        		}
+        		
+        		if("W".equals(code)){
+        			if(input.contains("S")){
+        				input.remove("S");
+
+        			}
+        			else
+        				input.add(code);
+        		}
+        		
+
+        	}
+    		if("A".equals(code) && !input.contains("A")){
+    			//if(! input.contains("W") && ! input.contains("S")){
+    			input.add(code);
+    			//}
+    		}
+    		
+    		if("D".equals(code) && !input.contains("D")){
+    			//if(! input.contains("W") && ! input.contains("S")){
+    			input.add(code);
+    			//}
+    		}
+			pWriter.close();
+        	
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	
+
+        	
+        });
+        
+        scene.setOnKeyReleased(event1 -> {
+        	
+        	if(input.contains("A")){
+        		input.remove("A");
+        	}
+        	
+        	if(input.contains("D")){
+        		input.remove("D");
+        	}
         });
 		
 		
