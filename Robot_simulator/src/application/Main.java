@@ -1,6 +1,4 @@
 package application;
-	
-
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,269 +16,284 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
 public class Main extends Application {
-	
+
 	public static Stage window;
-	
+
 	private Timeline timeline = new Timeline();
-	private static double speed = 0.01;
+	private static double FPS = 0.01;
+	public static double speed = 2.0;
 	private boolean running = false;
+	private boolean bounce = false;
 	ArrayList<String> input;
-	
+
 	private Pane root;
-	
-    File outFile = new File("test.txt");
-	
-	
-	
-	
-    private List<Node> cars = new ArrayList<>();
 
-    private Node robot;
-    
-    public enum Direction{ //pre defined states!
-        UP, DOWN, LEFT, RIGHT, Stop
-    }
-    
-    private Direction direction;
-    
-    private double absAngle;
-	
-	private Parent createContent() throws Exception{
+	File outFile = new File("test.txt");
+
+	private List<Node> cars = new ArrayList<>();
+
+	private Node robot;
+
+	private double absAngle;
+
+	private Parent createContent() throws Exception {
+
+		// Parent root1= FXMLLoader.load(getClass().getResource("play.fxml"));
+		// Pane root2 = (Pane) root1.lookup("#paneFrame");
+		// Pane root = (Pane) root2.lookup("#panePlay");
+
+		input = new ArrayList<String>();
+
+		root = new Pane();
+
+		// root.setPrefSize(800.0, 700.0);
+
+		Rectangle rect1 = new Rectangle(910, 3, Color.BLACK);
+		rect1.setTranslateY(0);
 		
-
+		Rectangle rect2 = new Rectangle(910, 3, Color.BLACK);
+		rect2.setTranslateY(500);
 		
-//		Parent root1= FXMLLoader.load(getClass().getResource("play.fxml"));
-//		Pane root2 = (Pane) root1.lookup("#paneFrame");
-//		Pane root = (Pane) root2.lookup("#panePlay");
+		Rectangle rect3 = new Rectangle(3, 500, Color.BLACK);
+		rect3.setTranslateX(0);	
+		rect3.setTranslateY(0);
 		
-	    input = new ArrayList<String>();
-		
-		root= new Pane();
-		
-        root.setPrefSize(646.0, 473.0);
-        
-        
-        Rectangle rect1 = new Rectangle(270, 38, Color.BLACK);
-        rect1.setTranslateY(200);
-        
-        
-        robot = initRobot();
-        root.getChildren().add(robot);
-        root.getChildren().add(rect1);
-        
-        
-      //lower the speed if want to increase the the movement velocity.
-        KeyFrame frame = new KeyFrame(Duration.seconds(speed), event -> {
-        	
-        	if (robot.getBoundsInParent().intersects(rect1.getBoundsInParent())){
-        		if(input.contains("W")){
-           		 robot.setTranslateX(robot.getTranslateX() - 2*Math.sin(absAngle*Math.PI/180.0));
-           		 robot.setTranslateY(robot.getTranslateY() + 2*Math.cos(absAngle*Math.PI/180.0));
-            		input.clear();
-        		}
-        		
-        		if(input.contains("S")){
-            		 robot.setTranslateX(robot.getTranslateX() + 2*Math.sin(absAngle*Math.PI/180.0));
-             		 robot.setTranslateY(robot.getTranslateY() - 2*Math.cos(absAngle*Math.PI/180.0));
-        			input.clear();
-        		}
-        		
-        		if(input.contains("A")){
-          		  robot.getTransforms().add(new Rotate(0.5,0,0));
-          		  absAngle += 0.5;
-          		 input.clear();
+		Rectangle rect4 = new Rectangle(3, 500, Color.BLACK);
+		rect4.setTranslateX(908);	
+		rect4.setTranslateY(0);
 
-        		}
-        		
-        		if(input.contains("D")){
-          		  robot.getTransforms().add(new Rotate(-0.5,0,0));
-          		  absAngle -= 0.5;
-            	 input.clear();
+		Image image = new Image("bat.png");
+		Rectangle robot = new Rectangle(30, 40, Color.WHITE);
+		ImagePattern imagePattern = new ImagePattern(image);
+		robot.setTranslateX(200.0);
+		robot.setTranslateY(450);
+		robot.setFill(imagePattern);
 
-          		}
+		root.getChildren().add(robot);
+		root.getChildren().add(rect1);
+		root.getChildren().add(rect2);
+		root.getChildren().add(rect3);
+		root.getChildren().add(rect4);
 
-        	}
+		// lower the speed if want to increase the the movement velocity.
+		KeyFrame frame = new KeyFrame(Duration.seconds(FPS), event -> {
+			
+			if (robot.getBoundsInParent().intersects(rect1.getBoundsInParent())
+					|| robot.getBoundsInParent().intersects(rect2.getBoundsInParent())
+					|| robot.getBoundsInParent().intersects(rect3.getBoundsInParent())
+					|| robot.getBoundsInParent().intersects(rect4.getBoundsInParent())) {
 
+				bounce = true;
 
-        	if(!input.contains("W") && !input.contains("S"))
-        		robot.setTranslateY(robot.getTranslateY());
+			}else{
+				bounce = false;
+			}
+//			
+//			if (CollisionDetectors.PolylineIntersection(robot, rect1) 
+//					|| CollisionDetectors.PolylineIntersection(robot, rect2)
+//					|| CollisionDetectors.PolylineIntersection(robot, rect3)
+//					|| CollisionDetectors.PolylineIntersection(robot, rect4)){
+//				bounce = true;
+//			}else{
+//				bounce = false;
+//			}
 
+			if (bounce) {
+				//System.out.println(speed);
 
-        	 if(input.contains("W")){
-        		 robot.setTranslateX(robot.getTranslateX() + 2*Math.sin(absAngle*Math.PI/180.0));
-        		 robot.setTranslateY(robot.getTranslateY() - 2*Math.cos(absAngle*Math.PI/180.0));
-    		}
+				if (input.contains("W")) {
+					//System.out.println(speed);
+					robot.setTranslateX(robot.getTranslateX() + speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
+					robot.setTranslateY(robot.getTranslateY() - speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
+				}
+				
 
-        	  
-        	  if(input.contains("S")){
-         		 robot.setTranslateX(robot.getTranslateX() - 2*Math.sin(absAngle*Math.PI/180.0));
-         		 robot.setTranslateY(robot.getTranslateY() + 2*Math.cos(absAngle*Math.PI/180.0));
-     		}
-        	  
-        	  if(input.contains("A")){
-        		  if(input.contains("W") || input.contains("S")){
-        			  //robotSpeed*time/(radius + width/2)
-        			  robot.getTransforms().add(new Rotate(-1,10,0));
-        			  absAngle -= 1;
-        		  }else{
-        		  robot.getTransforms().add(new Rotate(-0.5,0,0));
-        		  absAngle -= 0.5;
-        		  }
-        	  }
-        	  
-        	  if(input.contains("D")){
-        		  if(input.contains("W") || input.contains("S")){
-        			  robot.getTransforms().add(new Rotate(1,10,0));
-        			  absAngle += 1;
-        			  
-        		  }else{
-        		  robot.getTransforms().add(new Rotate(0.5,38,0));
-        		  absAngle += 0.5;
-        		  }
-        	  }
- 
+			}
+			
+			if (bounce) {
+				//System.out.println(speed);
 
-        	
-        });
+				if (input.contains("S")) {
+					robot.setTranslateX(robot.getTranslateX() - speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
+					robot.setTranslateY(robot.getTranslateY() + speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
 
-        timeline.getKeyFrames().addAll(frame);
-        timeline.setCycleCount(Timeline.INDEFINITE);
+				}
+				
+			}
+			
+			
+			
+//
+//			if (!input.contains("W") && !input.contains("S")) {
+//
+//				speed = 0.0;
+//			}
 
-        return root;
-    }
-	
-	
+			if(!bounce){
+			if (input.contains("W")) {
 
+				speed= 2.0;
+				robot.setTranslateX(robot.getTranslateX() + speed * Math.sin(absAngle * Math.PI / 180.0));
+				robot.setTranslateY(robot.getTranslateY() - speed * Math.cos(absAngle * Math.PI / 180.0));
+			}
+			
+			if (input.contains("S")) {
+                
+				speed=2.0;
+				robot.setTranslateX(robot.getTranslateX() - speed * Math.sin(absAngle * Math.PI / 180.0));
+				robot.setTranslateY(robot.getTranslateY() + speed * Math.cos(absAngle * Math.PI / 180.0));
+			}
 
-   
+			if (input.contains("A")) {
+				if (input.contains("W") || input.contains("S")) {
+					// robotSpeed*time/(radius + width/2)
+					robot.getTransforms().add(new Rotate(-1, 15, 0));
+					absAngle -= 1;
+				} else {
+					robot.getTransforms().add(new Rotate(-0.5, 7, 5));
+					absAngle -= 0.5;
+				}
+			}
 
-    private Node initRobot() {
-        Rectangle rect = new Rectangle(20, 38, Color.GREEN);
-        rect.setTranslateX(200.0);
-        rect.setTranslateY(473.0 - 39);
-        return rect;
-    }
+			if (input.contains("D")) {
+				if (input.contains("W") || input.contains("S")) {
+					robot.getTransforms().add(new Rotate(1, 15, 0));
+					absAngle += 1;
 
+				} else {
+					robot.getTransforms().add(new Rotate(0.5, 23, 5));
+					absAngle += 0.5;
+				}
+			}
+			}
 
+		});
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+		timeline.getKeyFrames().addAll(frame);
+		timeline.setCycleCount(Timeline.INDEFINITE);
 
-    	Parent root = FXMLLoader.load(getClass().getResource("open.fxml"));
-    	primaryStage.setTitle("Robot simulator");
-    	
-    	window = primaryStage;
-    	window.setScene(new Scene(root,600.0, 400.0));
-    	
-    	MainScreen(root);
-
-
-        primaryStage.show();
-    }
-
-    public void MainScreen(Parent root) {
-		// TODO Auto-generated method stub
-    	
-		
+		return root;
 	}
-    
-    public void start_Btn() throws Exception{
-    	
-    	Scene scene = new Scene(createContent(),646.0, 473.0);
-    	key_press(scene);
-    	direction=Direction.Stop;
-    	timeline.play();
-    	window.setScene(scene);
-    	window.show();
-    }
+
+	private Node initRobot() {
+		Rectangle rect = new Rectangle(20, 38, Color.GREEN);
+		rect.setTranslateX(200.0);
+		rect.setTranslateY(600.0 - 39);
+		return rect;
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+
+		Parent root = FXMLLoader.load(getClass().getResource("open.fxml"));
+		primaryStage.setTitle("Robot simulator");
+
+		window = primaryStage;
+		window.setScene(new Scene(root, 600.0, 400.0));
+
+		MainScreen(root);
+
+		window.show();
+	}
+
+	public void MainScreen(Parent root) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void start_Btn() throws Exception {
+
+		Scene scene = new Scene(createContent(), 900.0, 570.0);
+		key_press(scene);
+		timeline.play();
+		window.setScene(scene);
+		window.setResizable(false);
+		window.show();
+	}
 
 	public void key_press(Scene scene) {
 		// TODO Auto-generated method stub
-		
-        scene.setOnKeyPressed(event -> {
-        	
-        	String code = event.getCode().toString();
-        	
-            try {
+
+		scene.setOnKeyPressed(event -> {
+
+			String code = event.getCode().toString();
+
+			try {
 				FileWriter fWriter = new FileWriter(outFile, true);
 				PrintWriter pWriter = new PrintWriter(fWriter);
 
+				if (!input.contains(code)) {
+					if ("S".equals(code)) {
+						if (input.contains("W")) {
+							input.remove("W");
+							String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+							pWriter.println(timeStamp + " robot stop");
 
-        	
+						} else
+							input.add(code);
+					}
 
-        	if(! input.contains(code)){
-        		if("S".equals(code)){
-        			if(input.contains("W")){
-        				input.remove("W");
-        				String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-        				pWriter.println(timeStamp + " robot stop");
+					if ("W".equals(code)) {
+						if (input.contains("S")) {
+							input.remove("S");
 
-        			}
-        			else 
-        				input.add(code);
-        		}
-        		
-        		if("W".equals(code)){
-        			if(input.contains("S")){
-        				input.remove("S");
+						} else
+							input.add(code);
+					}
 
-        			}
-        			else
-        				input.add(code);
-        		}
-        		
+				}
+				if ("A".equals(code) && !input.contains("A")) {
+					// if(! input.contains("W") && ! input.contains("S")){
+					input.add(code);
+					// }
+				}
 
-        	}
-    		if("A".equals(code) && !input.contains("A")){
-    			//if(! input.contains("W") && ! input.contains("S")){
-    			input.add(code);
-    			//}
-    		}
-    		
-    		if("D".equals(code) && !input.contains("D")){
-    			//if(! input.contains("W") && ! input.contains("S")){
-    			input.add(code);
-    			//}
-    		}
-			pWriter.close();
-        	
+				if ("D".equals(code) && !input.contains("D")) {
+					// if(! input.contains("W") && ! input.contains("S")){
+					input.add(code);
+					// }
+				}
+				pWriter.close();
+
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	
 
-        	
-        });
-        
-        scene.setOnKeyReleased(event1 -> {
-        	
-        	if(input.contains("A")){
-        		input.remove("A");
-        	}
-        	
-        	if(input.contains("D")){
-        		input.remove("D");
-        	}
-        });
-		
-		
+		});
+
+		scene.setOnKeyReleased(event1 -> {
+
+			if (input.contains("A")) {
+				input.remove("A");
+			}
+
+			if (input.contains("D")) {
+				input.remove("D");
+			}
+		});
+
 	}
 	
-	public void quit(){
+	public void isBounce(){
+		
+	}
+
+	public void quit() {
 		System.exit(0);
 	}
 
 	public static void main(String[] args) {
-        launch(args);
-    }
+		launch(args);
+	}
 }
