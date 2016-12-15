@@ -1,5 +1,6 @@
 package application;
 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,8 +8,6 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -20,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -41,6 +41,10 @@ public class Main extends Application {
 	private boolean running = false;
 	private boolean bounce = false;
 	ArrayList<String> input;
+	
+	ArrayList<Double> X_pos = new ArrayList<Double>();
+	ArrayList<Double> Y_pos = new ArrayList<Double>();
+	ArrayList<Double> Ang = new ArrayList<Double>(); 
 
 	public String code1;
 	private Pane root;
@@ -49,6 +53,9 @@ public class Main extends Application {
 
 
 	private Node robot;
+	public TextArea text_area;
+	public Button btn0;
+
 
 	private double absAngle;
 	
@@ -59,6 +66,10 @@ public class Main extends Application {
 
 		private Label label1 = new Label();
 		private Label label2 = new Label();
+		private Label label3 = new Label();
+		private Label label4 = new Label();
+
+		private boolean isParse;
 
 	private Parent createContent() throws Exception {
 
@@ -67,6 +78,7 @@ public class Main extends Application {
 		// Pane root = (Pane) root2.lookup("#panePlay");
 
 		input = new ArrayList<String>();
+
 
 		root = new Pane();
 
@@ -92,6 +104,7 @@ public class Main extends Application {
 		robot.setTranslateX(200.0);
 		robot.setTranslateY(300);
 		robot.setFill(imagePattern);
+		
 		label1.setTextFill(Color.web("#0076a3"));
 		label1.setFont(new Font("Arial", 20));
 		label1.setTranslateX(300);
@@ -102,7 +115,16 @@ public class Main extends Application {
 		label2.setFont(new Font("Arial", 20));
 		label2.setTranslateX(300);
 		label2.setTranslateY(540);
+		
+		label3.setTextFill(Color.web("#0076a3"));
+		label3.setFont(new Font("Arial", 20));
+		label3.setTranslateX(450);
+		label3.setTranslateY(520);
 
+		label4.setTextFill(Color.web("#0076a3"));
+		label4.setFont(new Font("Arial", 20));
+		label4.setTranslateX(450);
+		label4.setTranslateY(540);
 
 		W.setTranslateX(100);
 		W.setTranslateY(510);
@@ -161,7 +183,9 @@ public class Main extends Application {
 		root.getChildren().add(D);
 		root.getChildren().add(label1);
 		root.getChildren().add(label2);
-
+		root.getChildren().add(label3);
+		root.getChildren().add(label4);
+		
 		root.getChildren().add(robot);
 		root.getChildren().add(rect1);
 		root.getChildren().add(rect2);
@@ -173,7 +197,8 @@ public class Main extends Application {
 			
 			label1.setText("X: "+ Float.toString((float)(robot.getTranslateX())));
 			label2.setText("Y: "+ Float.toString((float)(robot.getTranslateY())));
-
+			label3.setText("Distance: "+ Float.toString((float)(distance)));
+			label4.setText("Speed: "+ Float.toString((float)(speed)));
 			
 			if (robot.getBoundsInParent().intersects(rect1.getBoundsInParent())
 					|| robot.getBoundsInParent().intersects(rect2.getBoundsInParent())
@@ -200,46 +225,65 @@ public class Main extends Application {
 			if (bounce) {
 				//System.out.println(speed);
 
-				if (input.contains("W")) {
-					//System.out.println(speed);
-					robot.setTranslateX(robot.getTranslateX() + speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
-					robot.setTranslateY(robot.getTranslateY() - speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
+//				if (input.contains("W")) {
+//					//System.out.println(speed);
+//					robot.setTranslateX(robot.getTranslateX() + speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
+//					robot.setTranslateY(robot.getTranslateY() - speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
+//				}
+//				
+//
+//				if (input.contains("S")) {
+//					robot.setTranslateX(robot.getTranslateX() - speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
+//					robot.setTranslateY(robot.getTranslateY() + speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
+//
+//				}
+				
+				input.clear();
+				
+				robot.setTranslateX(X_pos.get(X_pos.size()-5));
+				robot.setTranslateY(Y_pos.get(Y_pos.size()-5));
+				absAngle=absAngle-(Ang.get(Ang.size()-1)-Ang.get(Ang.size()-5));
+				robot.getTransforms().add(new Rotate(-(Ang.get(Ang.size()-1)-Ang.get(Ang.size()-5)), 15, 0));
+				
+				for (int i=0; i<4;i++){
+					X_pos.remove(X_pos.size()-1);
+					Y_pos.remove(Y_pos.size()-1);
+					Ang.remove(Ang.size()-1);
 				}
 				
-
-			}
-			
-			if (bounce) {
-				//System.out.println(speed);
-
-				if (input.contains("S")) {
-					robot.setTranslateX(robot.getTranslateX() - speed/10.0 * Math.sin(absAngle * Math.PI / 180.0));
-					robot.setTranslateY(robot.getTranslateY() + speed/10.0 * Math.cos(absAngle * Math.PI / 180.0));
-
-				}
-				
 			}
 			
 			
 			
-//
-//			if (!input.contains("W") && !input.contains("S")) {
-//
-//				speed = 0.0;
-//			}
+
+			if (!input.contains("W") && !input.contains("S")) {
+
+				speed = 0.0;
+				X_pos.add(robot.getTranslateX());
+				Y_pos.add(robot.getTranslateY());
+				Ang.add(absAngle);
+			}
 
 
 			try {
 				FileWriter fWriter = new FileWriter(outFile, true);
 				PrintWriter pWriter = new PrintWriter(fWriter);
+				
 			
 			if(!bounce){
 			if (input.contains("W")) {
 
-				speed= 2.0;
+				speed= Xml.speed;
 				robot.setTranslateX(robot.getTranslateX() + speed * Math.sin(absAngle * Math.PI / 180.0));
 				robot.setTranslateY(robot.getTranslateY() - speed * Math.cos(absAngle * Math.PI / 180.0));
 				distance+=speed;
+				
+				X_pos.add(robot.getTranslateX());
+				Y_pos.add(robot.getTranslateY());
+				Ang.add(absAngle);
+				
+
+				
 				if(!input.contains("A") && !input.contains("D")){
 				String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 				pWriter.println(timeStamp + " W");
@@ -248,10 +292,14 @@ public class Main extends Application {
 			
 			if (input.contains("S")) {
                 
-				speed=2.0;
+				speed=Xml.speed;
 				robot.setTranslateX(robot.getTranslateX() - speed * Math.sin(absAngle * Math.PI / 180.0));
 				robot.setTranslateY(robot.getTranslateY() + speed * Math.cos(absAngle * Math.PI / 180.0));
 				distance+=speed;
+				
+				X_pos.add(robot.getTranslateX());
+				Y_pos.add(robot.getTranslateY());
+				Ang.add(absAngle);
 				
 				if(!input.contains("A") && !input.contains("D")){
 				String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
@@ -262,8 +310,12 @@ public class Main extends Application {
 			if (input.contains("A")) {
 				if (input.contains("W") || input.contains("S")) {
 					// robotSpeed*time/(radius + width/2)
-					robot.getTransforms().add(new Rotate(-1, 15, 0));
-					absAngle -= 1;
+					robot.getTransforms().add(new Rotate(-1.5, 15, 0));
+					absAngle -= 1.5;
+					
+					X_pos.add(robot.getTranslateX());
+					Y_pos.add(robot.getTranslateY());
+					Ang.add(absAngle);
 					
 					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 					if(input.contains("W")){
@@ -272,10 +324,15 @@ public class Main extends Application {
 						pWriter.println(timeStamp + " SA " + absAngle);
 					}		
 				} else {
-					robot.getTransforms().add(new Rotate(-0.5, 7, 5));
+					robot.getTransforms().add(new Rotate(-1.0, 7, 5));
 					// radian distance calculate
-					distance+=(15.0-7.0)*0.5;
-					absAngle -= 0.5;
+					distance+=2.0*1.0;
+					absAngle -= 1;
+					
+					X_pos.add(robot.getTranslateX());
+					Y_pos.add(robot.getTranslateY());
+					Ang.add(absAngle);
+					
 					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 					pWriter.println(timeStamp + " A " + absAngle);
 				}
@@ -283,8 +340,12 @@ public class Main extends Application {
 
 			if (input.contains("D")) {
 				if (input.contains("W") || input.contains("S")) {
-					robot.getTransforms().add(new Rotate(1, 15, 0));
-					absAngle += 1;
+					robot.getTransforms().add(new Rotate(1.5, 15, 0));
+					absAngle += 1.5;
+					
+					X_pos.add(robot.getTranslateX());
+					Y_pos.add(robot.getTranslateY());
+					Ang.add(absAngle);
 					
 					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 					if(input.contains("W")){
@@ -294,9 +355,14 @@ public class Main extends Application {
 					}
 
 				} else {
-					robot.getTransforms().add(new Rotate(0.5, 23, 5));
-					distance+=(23.0-15.0)*0.5;
-					absAngle += 0.5;
+					robot.getTransforms().add(new Rotate(1.0, 23, 5));
+					distance+=2.0*1.0;
+					absAngle += 1.0;
+					
+					X_pos.add(robot.getTranslateX());
+					Y_pos.add(robot.getTranslateY());
+					Ang.add(absAngle);
+					
 					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
 					pWriter.println(timeStamp + " D " + absAngle);
 				}
@@ -343,6 +409,21 @@ public class Main extends Application {
 
 	public void MainScreen(Parent root) {
 		// TODO Auto-generated method stub
+		
+		
+        text_area = (TextArea) root.lookup("#xml");
+        btn0 = (Button) root.lookup("#haha");
+        
+        btn0.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            	Xml.xml(text_area);
+            }
+        });
+        
+        
+
 
 	}
 
@@ -419,24 +500,12 @@ public class Main extends Application {
 
 	}
 	
-	public void inBound(){
-		
-        if (robot.getTranslateX() < 0) {
-            robot.setTranslateX(0);
 
-        } else if (robot.getTranslateX() > 800 - 50) {
-            robot.setTranslateX(800 - 50);
 
-        }
 
-        if (robot.getTranslateY() < 0) {
-            robot.setTranslateY(0);
-        } else if (robot.getTranslateY() > 400 - 50) {
-            robot.setTranslateY(400 - 50);
-
-        }
-	}
 	
+	
+
 
 	public void quit() {
 		System.exit(0);

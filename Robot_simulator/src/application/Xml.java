@@ -5,51 +5,71 @@ package application;
 	import javax.xml.parsers.DocumentBuilder;
 	import org.w3c.dom.Document;
 	import org.w3c.dom.NodeList;
-	import org.w3c.dom.Node;
+
+import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+
+import org.w3c.dom.Node;
 	import org.w3c.dom.Element;
 	import java.io.File;
 
 	public class Xml {
 
-	  public static void main(String argv[]) {
-
-	    try {
-
-		File fXmlFile = new File("test.xml");
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(fXmlFile);
+		public static Element eElement;
+		public static double speed;
 
 
-		doc.getDocumentElement().normalize();
+		public static void xml(TextArea text_area){
 
-		System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+		    try {
+		    	
+				FileChooser fc = new FileChooser();
+				fc.setInitialDirectory(new File("../Robot_simulator/car_type"));
+				fc.getExtensionFilters().addAll(new ExtensionFilter("xml files","*.xml"));
+				File selectFile = fc.showOpenDialog(null);
 
-		NodeList nList = doc.getElementsByTagName("staff");
+			File fXmlFile = selectFile;
+					//new File("../Robot_simulator/car_type/test.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
 
-		System.out.println("----------------------------");
 
-		for (int temp = 0; temp < nList.getLength(); temp++) {
+			doc.getDocumentElement().normalize();
 
-			Node nNode = nList.item(temp);
+			//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
-			System.out.println("\nCurrent Element :" + nNode.getNodeName());
+			NodeList nList = doc.getElementsByTagName("car");
 
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+			//System.out.println("----------------------------");
 
-				Element eElement = (Element) nNode;
+			for (int temp = 0; temp < nList.getLength(); temp++) {
 
-				System.out.println("Staff id : " + eElement.getAttribute("id"));
-				System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-				System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-				System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-				System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
+				org.w3c.dom.Node nNode = nList.item(temp);
 
+				//System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+				if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+
+					eElement = (Element) nNode;
+					
+					
+
+					
+					text_area.appendText("Car name : " + eElement.getElementsByTagName("carname").item(0).getTextContent() + "\n");
+					text_area.appendText("Width : " + eElement.getElementsByTagName("width").item(0).getTextContent()+ "\n");
+					text_area.appendText("Length : " + eElement.getElementsByTagName("length").item(0).getTextContent()+ "\n");
+					text_area.appendText("Static turning speed : " + eElement.getElementsByTagName("static_turning_degree").item(0).getTextContent()+ "\n");
+					text_area.appendText("Speed : " + eElement.getElementsByTagName("speed").item(0).getTextContent()+ "\n\n");
+
+					speed=Double.parseDouble(eElement.getElementsByTagName("speed").item(0).getTextContent());
+
+					
+				}
 			}
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
 		}
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	  }
-
 	}
