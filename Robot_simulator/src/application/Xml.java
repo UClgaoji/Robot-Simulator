@@ -18,6 +18,10 @@ import org.w3c.dom.Node;
 
 		public static Element eElement;
 		public static double speed;
+		public static String cartype;
+		public static double width;
+		public static double length;
+		public static boolean Selected=true;
 
 
 		public static void xml(TextArea text_area){
@@ -64,10 +68,15 @@ import org.w3c.dom.Node;
 					text_area.appendText("Speed : " + eElement.getElementsByTagName("speed").item(0).getTextContent()+ "\n\n");
 
 					speed=Double.parseDouble(eElement.getElementsByTagName("speed").item(0).getTextContent());
+					cartype=eElement.getElementsByTagName("carname").item(0).getTextContent();
+					width=Double.parseDouble(eElement.getElementsByTagName("width").item(0).getTextContent());
+					length=Double.parseDouble(eElement.getElementsByTagName("length").item(0).getTextContent());
+					
 
 					
 				}
 			}
+
 		    } catch (Exception e) {
 			e.printStackTrace();
 		    }

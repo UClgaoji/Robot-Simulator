@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<car>
+	<carname>tank</carname>
+		<width>40</width>
+		<length>50</length>
+		<static_turning_degree>0.5</static_turning_degree>
+		<speed>2.0</speed>
+</car>

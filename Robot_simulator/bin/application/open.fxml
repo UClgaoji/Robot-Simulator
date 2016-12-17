@@ -8,25 +8,30 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Main">
    <children>
-      <Label layoutX="254.0" layoutY="42.0" text="Robot">
+      <Label layoutX="254.0" layoutY="14.0" text="Robot">
          <font>
             <Font size="34.0" />
          </font>
       </Label>
-      <Button fx:id="start_btn" layoutX="27.0" layoutY="122.0" mnemonicParsing="false" onAction="#start_Btn" prefHeight="50.0" prefWidth="149.0" text="start">
+      <Button fx:id="start_btn" layoutX="27.0" layoutY="242.0" mnemonicParsing="false" onAction="#start_Btn" prefHeight="30.0" prefWidth="149.0" text="Start">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="quit_btn" layoutX="27.0" layoutY="308.0" mnemonicParsing="false" onAction="#quit" prefHeight="39.0" prefWidth="149.0" text="quit">
+      <Button fx:id="quit_btn" layoutX="27.0" layoutY="289.0" mnemonicParsing="false" onAction="#quit" prefHeight="30.0" prefWidth="149.0" text="Quit">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <TextArea layoutX="319.0" layoutY="133.0" prefHeight="209.0" prefWidth="216.0" fx:id="xml" />
-      <Button fx:id="haha" layoutX="27.0" layoutY="213.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="149.0" text="Car Selecter">
+      <TextArea layoutX="319.0" layoutY="107.0" prefHeight="235.0" prefWidth="216.0" fx:id="xml" />
+      <Button fx:id="haha" layoutX="27.0" layoutY="142.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" text="Car Selecter">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font></Button>
+      <Button fx:id="show" layoutX="27.0" layoutY="195.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="Demonstration">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
    </children>
 </Pane>
